@@ -7,7 +7,7 @@ function Layout() {
     <div className="bg-slate-100 h-screen">
       <Header />
 
-      <div className="container mx-auto mt-5 px-3 h-full">
+      <div className="container mx-auto mt-5 px-3">
         <Outlet />
       </div>
     </div>
