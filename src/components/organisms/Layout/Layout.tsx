@@ -4,10 +4,9 @@ import { Header } from '../../molecules/Header';
 
 function Layout() {
   return (
-    <div className="bg-slate-100 h-screen">
+    <div className="bg-light h-100">
       <Header />
-
-      <div className="container mx-auto mt-5 px-3">
+      <div className="container mx-auto mt-3 px-3">
         <Outlet />
       </div>
     </div>
