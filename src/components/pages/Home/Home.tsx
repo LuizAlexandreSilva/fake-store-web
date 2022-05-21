@@ -14,20 +14,21 @@ function Home() {
   const { categories } = useContext(AuthContext);
   const [selectedCategory, setSelectedCategory] = useState<string>();
 
-  async function loadProducts() {
+  async function loadProducts(category?: string) {
     try {
-      const response = await api.get('/products/');
+      setIsLoading(true);
+      const response = await api.get(
+        `/products/${category ? `category/${category}` : ''}`,
+      );
 
       setProducts(response.data);
-      setIsLoading(false);
     } catch (err) {
       console.error(JSON.stringify(err));
+    } finally {
+      setIsLoading(false);
     }
   }
 
-  // useEffect(() => {
-  //   loadProducts();
-  // }, []);
   const handleChangeCategory = useCallback(
     (category: string) => {
       const searchCategories = searchParams.has('category')
@@ -40,6 +41,7 @@ function Home() {
         ...searchParams,
         category,
       });
+      loadProducts(category);
     },
     [searchParams, setSearchParams],
   );
@@ -49,6 +51,7 @@ function Home() {
     if (categoryParams) {
       setSelectedCategory(categoryParams);
     }
+    loadProducts(categoryParams || '');
   }, []);
 
   return (
