@@ -6,17 +6,13 @@ import { Categories } from '../../molecules/Categories';
 import { ProductList } from '../../organisms/ProductList';
 import { AuthContext } from '../../../contexts/auth';
 
-export type MapCategoryChecked = {
-  [key: string]: boolean;
-};
 function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>();
 
   const [searchParams, setSearchParams] = useSearchParams();
   const { categories } = useContext(AuthContext);
-  const [mapCategoryChecked, setMapCategoryChecked] =
-    useState<MapCategoryChecked>({});
+  const [selectedCategory, setSelectedCategory] = useState<string>();
 
   async function loadProducts() {
     try {
@@ -34,46 +30,24 @@ function Home() {
   // }, []);
   const handleChangeCategory = useCallback(
     (category: string) => {
-      let searchCategories = searchParams.has('categories')
-        ? searchParams.get('categories') || ''
+      const searchCategories = searchParams.has('category')
+        ? searchParams.get('category') || ''
         : '';
-      const splittedCategories = searchCategories?.split(',') || [];
-      const categoryIsSelected = !!splittedCategories?.includes(category);
+      const categoryIsSelected = searchCategories === category;
 
-      if (categoryIsSelected) {
-        const index = splittedCategories?.findIndex(
-          (c: string) => c === category,
-        );
-
-        if (index >= 0) {
-          splittedCategories?.splice(index, 1);
-          searchCategories = splittedCategories.toString();
-        }
-      } else {
-        searchCategories = searchCategories?.concat(`${category},`) || '';
-      }
-
-      setMapCategoryChecked({
-        ...mapCategoryChecked,
-        [category]: !categoryIsSelected,
-      });
+      setSelectedCategory(categoryIsSelected ? '' : category);
       setSearchParams({
         ...searchParams,
-        categories: searchCategories,
+        category,
       });
     },
-    [mapCategoryChecked, searchParams, setSearchParams],
+    [searchParams, setSearchParams],
   );
 
   useEffect(() => {
-    const params = searchParams.get('categories');
-    if (params) {
-      const splittedCategories = params.split(',');
-      const map: MapCategoryChecked = {};
-      splittedCategories.forEach((category) => {
-        if (category !== '') map[category] = true;
-      });
-      setMapCategoryChecked(map);
+    const categoryParams = searchParams.get('category');
+    if (categoryParams) {
+      setSelectedCategory(categoryParams);
     }
   }, []);
 
@@ -82,7 +56,7 @@ function Home() {
       <div className="col-lg-3 col-md-4 col-12">
         <Categories
           items={categories}
-          checkedMap={mapCategoryChecked}
+          selected={selectedCategory}
           onChangeCategory={handleChangeCategory}
         />
       </div>
