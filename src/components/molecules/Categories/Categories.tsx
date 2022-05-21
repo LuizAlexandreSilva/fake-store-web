@@ -1,76 +1,28 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import React from 'react';
 import { Card, CardBody, CardTitle, Input, Label } from 'reactstrap';
-import { AuthContext } from '../../../contexts/auth';
+import { MapCategoryChecked } from '../../pages/Home/Home';
 
-type MapChecked = {
-  [key: string]: boolean;
+type Props = {
+  items: string[];
+  checkedMap: MapCategoryChecked;
+  onChangeCategory: (category: string) => void;
 };
 
-function Categories() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const { categories } = useContext(AuthContext);
-  const [mapChecked, setMapChecked] = useState<MapChecked>({});
-
-  const handleChange = useCallback(
-    (category: string) => {
-      let searchCategories = searchParams.has('categories')
-        ? searchParams.get('categories') || ''
-        : '';
-      const splittedCategories = searchCategories?.split(',') || [];
-      const categoryIsSelected = !!splittedCategories?.includes(category);
-
-      if (categoryIsSelected) {
-        const index = splittedCategories?.findIndex(
-          (c: string) => c === category,
-        );
-
-        if (index >= 0) {
-          splittedCategories?.splice(index, 1);
-          searchCategories = splittedCategories.toString();
-        }
-      } else {
-        searchCategories = searchCategories?.concat(`${category},`) || '';
-      }
-
-      setMapChecked({
-        ...mapChecked,
-        [category]: !categoryIsSelected,
-      });
-      setSearchParams({
-        ...searchParams,
-        categories: searchCategories,
-      });
-    },
-    [mapChecked, searchParams, setSearchParams],
-  );
-
-  useEffect(() => {
-    const params = searchParams.get('categories');
-    if (params) {
-      const splittedCategories = params.split(',');
-      const map: MapChecked = {};
-      splittedCategories.forEach((category) => {
-        if (category !== '') map[category] = true;
-      });
-      setMapChecked(map);
-    }
-  }, []);
-
+function Categories({ items, checkedMap, onChangeCategory }: Props) {
   return (
     <Card>
       <CardBody>
         <CardTitle tag="strong">Categories</CardTitle>
         <div className="mt-3">
-          {categories &&
-            categories.map((category) => (
+          {items &&
+            items.map((category) => (
               <div className="d-flex">
-                <Label key={category} checked={mapChecked[category]}>
+                <Label key={category} checked={checkedMap[category]}>
                   <Input
                     className="me-2"
                     type="checkbox"
-                    checked={mapChecked[category]}
-                    onChange={() => handleChange(category)}
+                    checked={checkedMap[category]}
+                    onChange={() => onChangeCategory(category)}
                   />
                   {category}
                 </Label>
