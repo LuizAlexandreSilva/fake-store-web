@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import ReactStars from 'react-stars';
 import {
   Button,
@@ -8,7 +8,12 @@ import {
   CardSubtitle,
   CardText,
   CardTitle,
+  Input,
+  InputGroup,
 } from 'reactstrap';
+import api from '../../../config/api';
+import { AuthContext } from '../../../contexts/auth';
+import { ToastContext } from '../../../contexts/toast';
 import { Product } from '../../../entities/product';
 
 type Props = {
@@ -16,6 +21,57 @@ type Props = {
 };
 
 function ProductListItem({ data }: Props) {
+  const { user } = useContext(AuthContext);
+  const { showToast } = useContext(ToastContext);
+  const [quantity, setQuantity] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleChangeQuantity = useCallback(
+    (type: 'minus' | 'plus') => {
+      if (type === 'minus' && quantity > 1) {
+        setQuantity(quantity - 1);
+      } else if (type === 'plus' && quantity < 99) {
+        setQuantity(quantity + 1);
+      }
+    },
+    [quantity],
+  );
+
+  const handleAddToCart = useCallback(async () => {
+    if (quantity < 1 || quantity > 99) return;
+
+    try {
+      setIsLoading(true);
+      await api.post('/carts', {
+        userId: user?.id,
+        date: new Date().toISOString(),
+        products: [
+          {
+            productId: data.id,
+            quantity,
+          },
+        ],
+      });
+
+      showToast({
+        title: 'Success!',
+        body: (
+          <>
+            <p>Product added to cart successfully.</p>
+            <Button color="success">Go to cart</Button>
+          </>
+        ),
+      });
+    } catch (err) {
+      showToast({
+        title: 'Failed!',
+        body: 'Product was not added to cart. Try again later.',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [data.id, quantity, user?.id, showToast]);
+
   return (
     <div className="mb-3 col-lg-12 col-xl-6">
       <Card>
@@ -49,9 +105,29 @@ function ProductListItem({ data }: Props) {
                 </div>
               </div>
               <div className="mt-2">
-                <Button className="w-100" color="success">
-                  Add to Cart
-                </Button>
+                <InputGroup>
+                  <Button onClick={() => handleChangeQuantity('minus')}>
+                    -
+                  </Button>
+                  <Input
+                    type="number"
+                    value={quantity}
+                    min={1}
+                    max={99}
+                    onChange={(e) => setQuantity(+e.target.value)}
+                  />
+                  <Button onClick={() => handleChangeQuantity('plus')}>
+                    +
+                  </Button>
+
+                  <Button
+                    color="success"
+                    onClick={handleAddToCart}
+                    disabled={isLoading}
+                  >
+                    <small>{!isLoading ? 'Add to Cart' : 'loading'}</small>
+                  </Button>
+                </InputGroup>
               </div>
             </div>
           </CardBody>
