@@ -5,9 +5,9 @@ import {
   Route,
 } from 'react-router-dom';
 import { Layout } from '../components/organisms/Layout';
+import { Cart } from '../components/pages/Cart';
 import { Home } from '../components/pages/Home';
 import { NoPageFound } from '../components/pages/NoPageFound';
-import { Product } from '../components/pages/Product';
 import { SignIn } from '../components/pages/SignIn';
 import ProtectedRoute from './ProtectedRoute';
 
@@ -25,10 +25,10 @@ function Routes() {
             }
           />
           <Route
-            path="/product/:id"
+            path="/cart/:id"
             element={
               <ProtectedRoute>
-                <Product />
+                <Cart />
               </ProtectedRoute>
             }
           />

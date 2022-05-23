@@ -4,7 +4,7 @@ import api from '../config/api';
 export const APP_NAME = 'FakeStoreWeb';
 
 type User = {
-  id: string;
+  id: number;
   username: string;
   name: {
     firstname: string;
