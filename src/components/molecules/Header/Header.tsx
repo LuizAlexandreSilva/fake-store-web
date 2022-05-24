@@ -23,7 +23,12 @@ function Header() {
           <Button color="info" className="me-2" onClick={handleClickCart}>
             {`Cart ${cartProductsCount ? `(${cartProductsCount})` : ''}`}
           </Button>
-          <Button color="light" outline onClick={signOut}>
+          <Button
+            color="light"
+            outline
+            onClick={signOut}
+            data-testid="sign-out-btn"
+          >
             Sign Out
           </Button>
         </div>
