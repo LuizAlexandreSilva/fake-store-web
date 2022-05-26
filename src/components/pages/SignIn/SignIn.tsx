@@ -74,6 +74,7 @@ function SignIn() {
               disabled={isLoading}
               type="submit"
               className="w-100 mt-4"
+              data-testid="sign-in-btn"
             >
               {!isLoading ? 'Sign in' : 'Loading'}
             </Button>

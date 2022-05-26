@@ -48,7 +48,11 @@ function CartItem({ product }: Props) {
         </th>
         <th>$ {(product.quantity || 1) * product.price}</th>
         <th>
-          <Button color="danger" onClick={handleOpenRemoveModal}>
+          <Button
+            data-testid="delete-cart-item-btn"
+            color="danger"
+            onClick={handleOpenRemoveModal}
+          >
             X
           </Button>
         </th>
@@ -73,7 +77,11 @@ function CartItem({ product }: Props) {
         </ModalHeader>
         <ModalBody>You sure want to remove this product from cart?</ModalBody>
         <ModalFooter>
-          <Button color="danger" onClick={handleRemoveItemFromCart}>
+          <Button
+            data-testid="confirm-delete-cart-item-btn"
+            color="danger"
+            onClick={handleRemoveItemFromCart}
+          >
             Remove
           </Button>{' '}
           <Button onClick={() => setIsRemoveModalOpen(false)}>Cancel</Button>
