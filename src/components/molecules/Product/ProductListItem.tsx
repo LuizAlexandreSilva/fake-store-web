@@ -124,6 +124,7 @@ function ProductListItem({ data }: Props) {
                     color="success"
                     onClick={handleAddToCart}
                     disabled={isLoading}
+                    data-testid="add-product-to-cart-btn"
                   >
                     <small>{!isLoading ? 'Add to Cart' : 'loading'}</small>
                   </Button>
