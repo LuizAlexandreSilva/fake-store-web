@@ -7,7 +7,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import api from '../../config/api';
 import { CartItem } from '../../components/molecules/CartItem';
 import { ToastContext } from '../../contexts/toast';
-import { productMock } from '../__mocks__/product';
+import { productMock } from '../../__mocks__/product';
 
 const apiMock = new MockAdapter(api);
 

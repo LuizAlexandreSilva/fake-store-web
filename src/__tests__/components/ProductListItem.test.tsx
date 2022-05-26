@@ -8,7 +8,7 @@ import api from '../../config/api';
 import { AuthContext, User } from '../../contexts/auth';
 import { ToastContext } from '../../contexts/toast';
 import ProductListItem from '../../components/molecules/Product/ProductListItem';
-import { productMock } from '../__mocks__/product';
+import { productMock } from '../../__mocks__/product';
 
 const apiMock = new MockAdapter(api);
 
